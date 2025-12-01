@@ -56,8 +56,8 @@ shipit config reset
 ## requirements
 
 - git repository initialized
-- openai api key (get one at https://platform.openai.com/api-keys)
+- openrouter key (get one at https://openrouter.ai/settings/keys)
 
 ## license
 
-isc
+MIT
