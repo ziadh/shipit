@@ -59,14 +59,14 @@ export async function setupConfig() {
     {
       type: "password",
       name: "apiKey",
-      message: "Enter your OpenRouter API key:",
+      message: "enter your OpenRouter API key:",
       default: config.apiKey || "",
       mask: "*",
     },
     {
       type: "input",
       name: "model",
-      message: "Enter the model to use:",
+      message: "enter the model to use:",
       default: config.model || "x-ai/grok-4.1-fast:free",
     },
   ]);
@@ -79,7 +79,7 @@ export async function setupConfig() {
   }
 
   saveConfig(config);
-  console.log("✓ Configuration saved!");
+  console.log("✓ configuration saved!");
 }
 
 // Display current config (hide API key)
@@ -88,17 +88,17 @@ export function displayConfig() {
 
   if (!config.apiKey && !config.model) {
     console.log(
-      "No configuration found. Run `shipit config set` to get started."
+      "no configuration found. Run `shipit config set` to get started."
     );
     return;
   }
 
-  console.log("\nCurrent configuration:");
+  console.log("\ncurrent configuration:");
   console.log(
     `  API Key: ${config.apiKey ? "***" + config.apiKey.slice(-4) : "not set"}`
   );
   console.log(
-    `  Model: ${config.model || "x-ai/grok-4.1-fast:free (default)"}`
+    `  model: ${config.model || "x-ai/grok-4.1-fast:free (default)"}`
   );
   console.log();
 }
@@ -108,9 +108,9 @@ export function resetConfig() {
   ensureConfigDir();
   if (fs.existsSync(CONFIG_FILE)) {
     fs.unlinkSync(CONFIG_FILE);
-    console.log("✓ Configuration reset!");
+    console.log("✓ configuration reset!");
   } else {
-    console.log("No configuration found to reset.");
+    console.log("no configuration found to reset.");
   }
 }
 
