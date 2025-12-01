@@ -5,13 +5,14 @@ import OpenAI from "openai";
 import { Command } from "commander";
 import ora from "ora";
 import { setupConfig, displayConfig, resetConfig, getConfig } from "./config";
+import { version } from "../package.json";
 
 const program = new Command();
 
 program
   .name("shipit")
   .description("Auto-generate and ship git commits with AI")
-  .version("1.0.1");
+  .version(version);
 
 program
   .command("config <action>")
