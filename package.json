@@ -7,6 +7,9 @@
   "type": "commonjs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "shipit": "dist/index.js"
+  },
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "npm run build"
@@ -17,5 +20,10 @@
   "devDependencies": {
     "@types/node": "^24.10.1",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "commander": "^14.0.2",
+    "dotenv": "^17.2.3",
+    "openai": "^6.9.1"
   }
 }
