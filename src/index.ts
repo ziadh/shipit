@@ -94,13 +94,19 @@ async function ship() {
       messages: [
         {
           role: "user",
-          content: `Generate a concise git commit message for these changes:\n\n${diff}`,
+          content: `Generate a concise git commit message for these changes. Return ONLY plain text, no markdown, no code blocks:\n\n${diff}`,
         },
       ],
     });
 
-    const commitMessage =
+    let commitMessage =
       response.choices[0]?.message?.content?.trim() || "Auto-generated commit";
+
+    // Remove markdown code blocks if present
+    commitMessage = commitMessage
+      .replace(/^```[\s\S]*?\n/, "") // Remove opening code block
+      .replace(/\n```$/, "") // Remove closing code block
+      .trim();
 
     console.log(`\ncommit message: ${commitMessage}\n`);
 
