@@ -22,8 +22,10 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@types/inquirer": "^9.0.9",
     "commander": "^14.0.2",
     "dotenv": "^17.2.3",
+    "inquirer": "^13.0.1",
     "openai": "^6.9.1"
   }
 }
