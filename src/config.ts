@@ -11,14 +11,12 @@ export interface ShipitConfig {
 const CONFIG_DIR = path.join(os.homedir(), ".shipit");
 const CONFIG_FILE = path.join(CONFIG_DIR, "config.json");
 
-// Ensure config directory exists
 function ensureConfigDir() {
   if (!fs.existsSync(CONFIG_DIR)) {
     fs.mkdirSync(CONFIG_DIR, { recursive: true });
   }
 }
 
-// Load config from file
 export function loadConfig(): ShipitConfig {
   ensureConfigDir();
   if (fs.existsSync(CONFIG_FILE)) {
@@ -32,26 +30,22 @@ export function loadConfig(): ShipitConfig {
   return {};
 }
 
-// Save config to file
 export function saveConfig(config: ShipitConfig) {
   ensureConfigDir();
   fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2));
 }
 
-// Get a specific config value
 export function getConfig(key: keyof ShipitConfig): string | undefined {
   const config = loadConfig();
   return config[key];
 }
 
-// Set a specific config value
 export function setConfig(key: keyof ShipitConfig, value: string) {
   const config = loadConfig();
   config[key] = value;
   saveConfig(config);
 }
 
-// Interactive configuration setup
 export async function setupConfig() {
   const config = loadConfig();
 
@@ -82,7 +76,6 @@ export async function setupConfig() {
   console.log("✓ configuration saved!");
 }
 
-// Display current config (hide API key)
 export function displayConfig() {
   const config = loadConfig();
 
@@ -103,7 +96,6 @@ export function displayConfig() {
   console.log();
 }
 
-// Reset config
 export function resetConfig() {
   ensureConfigDir();
   if (fs.existsSync(CONFIG_FILE)) {
@@ -114,7 +106,6 @@ export function resetConfig() {
   }
 }
 
-// Get config path for display/debugging
 export function getConfigPath(): string {
   return CONFIG_FILE;
 }
