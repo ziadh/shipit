@@ -3,22 +3,15 @@
 import { execSync } from "child_process";
 import OpenAI from "openai";
 import { Command } from "commander";
-import {
-  loadConfig,
-  setupConfig,
-  displayConfig,
-  resetConfig,
-  getConfig,
-} from "./config";
+import { setupConfig, displayConfig, resetConfig, getConfig } from "./config";
 
 const program = new Command();
 
 program
   .name("shipit")
   .description("Auto-generate and ship git commits with AI")
-  .version("1.0.0");
+  .version("1.0.1");
 
-// Config command group
 program
   .command("config <action>")
   .description("Manage shipit configuration")
@@ -44,7 +37,6 @@ program
     }
   });
 
-// Main ship command (default when no args or explicit 'ship' command)
 program
   .command("ship", { isDefault: true })
   .description("Generate and ship your changes")
@@ -52,7 +44,6 @@ program
     ship();
   });
 
-// Allow running without explicit 'ship' command
 program.parse(process.argv);
 
 async function ship() {
@@ -102,10 +93,10 @@ async function ship() {
     let commitMessage =
       response.choices[0]?.message?.content?.trim() || "Auto-generated commit";
 
-    // Remove markdown code blocks if present
+    // remove markdown code blocks if present
     commitMessage = commitMessage
-      .replace(/^```[\s\S]*?\n/, "") // Remove opening code block
-      .replace(/\n```$/, "") // Remove closing code block
+      .replace(/^```[\s\S]*?\n/, "") // remove opening code block
+      .replace(/\n```$/, "") // remove closing code block
       .trim();
 
     console.log(`\ncommit message: ${commitMessage}\n`);
