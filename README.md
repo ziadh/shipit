@@ -5,7 +5,7 @@ auto-generate and ship git commits with ai. never write a commit message again.
 ## install
 
 ```bash
-npm install -g shipit
+npm install -g shipitai
 ```
 
 ## setup
