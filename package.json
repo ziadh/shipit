@@ -1,5 +1,5 @@
 {
-  "name": "shipit",
+  "name": "@ziadh/shipit",
   "version": "1.0.0",
   "description": "cli tool that helps you ship code faster",
   "license": "ISC",

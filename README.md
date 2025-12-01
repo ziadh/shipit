@@ -28,7 +28,7 @@ automatically generate a commit message based on your staged changes:
 shipit
 ```
 
-this will show you the ai-generated commit message and let you confirm before committing.
+this will show you the ai-generated commit message, then automatically commits and pushes.
 
 ### view config
 
