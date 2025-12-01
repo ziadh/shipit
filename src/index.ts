@@ -3,6 +3,7 @@
 import { execSync } from "child_process";
 import OpenAI from "openai";
 import { Command } from "commander";
+import ora from "ora";
 import { setupConfig, displayConfig, resetConfig, getConfig } from "./config";
 
 const program = new Command();
@@ -47,24 +48,32 @@ program
 program.parse(process.argv);
 
 async function ship() {
+  let spinner;
+
   try {
     // check if we're in git repo
     execSync("git rev-parse --git-dir", { stdio: "ignore" });
 
     // stage changes
-    console.log("staging changes...");
-    execSync("git add .");
+    spinner = ora({ text: "staging changes...", color: "blue" }).start();
+    try {
+      execSync("git add .");
+      spinner.succeed("changes staged");
+    } catch (error: any) {
+      spinner.fail("failed to stage changes");
+      throw error;
+    }
 
     const diff = execSync("git diff --cached").toString();
 
     if (!diff) {
-      console.log("no changes detected");
+      ora().warn("no changes detected");
       return;
     }
 
     const apiKey = getConfig("apiKey");
     if (!apiKey) {
-      console.error("\n✗ API key not configured");
+      ora().fail("API key not configured");
       console.error(
         "Run 'shipit config set' to configure your OpenRouter API key\n"
       );
@@ -73,43 +82,56 @@ async function ship() {
 
     const model = getConfig("model") || "x-ai/grok-4.1-fast:free";
 
-    console.log("generating commit message...");
+    spinner = ora({ text: "generating commit message...", color: "blue" }).start();
 
     const client = new OpenAI({
       baseURL: "https://openrouter.ai/api/v1",
       apiKey: apiKey,
     });
 
-    const response = await client.chat.completions.create({
-      model: model,
-      messages: [
-        {
-          role: "user",
-          content: `Generate a concise git commit message for these changes. Return ONLY plain text, no markdown, no code blocks:\n\n${diff}`,
-        },
-      ],
-    });
+    try {
+      const response = await client.chat.completions.create({
+        model: model,
+        messages: [
+          {
+            role: "user",
+            content: `Generate a concise git commit message for these changes. Return ONLY plain text, no markdown, no code blocks:\n\n${diff}`,
+          },
+        ],
+      });
 
-    let commitMessage =
-      response.choices[0]?.message?.content?.trim() || "Auto-generated commit";
+      let commitMessage =
+        response.choices[0]?.message?.content?.trim() || "Auto-generated commit";
 
-    // remove markdown code blocks if present
-    commitMessage = commitMessage
-      .replace(/^```[\s\S]*?\n/, "") // remove opening code block
-      .replace(/\n```$/, "") // remove closing code block
-      .trim();
+      // remove markdown code blocks if present
+      commitMessage = commitMessage
+        .replace(/^```[\s\S]*?\n/, "") // remove opening code block
+        .replace(/\n```$/, "") // remove closing code block
+        .trim();
 
-    console.log(`\ncommit message: ${commitMessage}\n`);
+      spinner.succeed(`commit message: ${commitMessage}`);
 
-    execSync(`git commit -m "${commitMessage.replace(/"/g, '\\"')}"`);
+      spinner = ora({ text: "committing changes...", color: "blue" }).start();
+      execSync(`git commit -m "${commitMessage.replace(/"/g, '\\"')}"`);
+      spinner.succeed("changes committed");
+    } catch (error: any) {
+      spinner.fail("failed to generate or commit");
+      throw error;
+    }
 
-    console.log("pushing changes...");
-
-    execSync("git push");
-
-    console.log("✓ all shipped!");
+    spinner = ora({ text: "pushing changes...", color: "blue" }).start();
+    try {
+      execSync("git push");
+      spinner.succeed("all shipped!");
+    } catch (error: any) {
+      spinner.fail("failed to push changes");
+      throw error;
+    }
   } catch (error: any) {
-    console.error("Error:", error.message);
+    if (spinner) {
+      spinner.fail("operation failed");
+    }
+    console.error("\nError:", error.message);
     process.exit(1);
   }
 }
