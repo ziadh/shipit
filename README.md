@@ -16,7 +16,20 @@ before using shipit, configure your openrouter api key:
 shipit config set
 ```
 
-you'll be prompted for your api key. it's stored locally in `~/.shipit`.
+you'll be prompted for your api key and model preference. it's stored locally in `~/.shipit`.
+
+alternatively, set individual config values directly:
+
+```bash
+# set just the api key
+shipit config set --apiKey your-key-here
+
+# set just the model
+shipit config set --model x-ai/grok-4.1-fast:free
+
+# set both at once
+shipit config set --apiKey your-key --model your-model
+```
 
 ## usage
 
@@ -30,20 +43,24 @@ shipit
 
 this will show you the ai-generated commit message, then automatically commits and pushes.
 
-### view config
+### manage config
 
-see your current configuration:
+view your current configuration:
 
 ```bash
 shipit config get
 ```
 
-### reset config
-
-remove your stored api key and start fresh:
+reset your configuration:
 
 ```bash
 shipit config reset
+```
+
+view config file location:
+
+```bash
+shipit config path
 ```
 
 ## what it does
