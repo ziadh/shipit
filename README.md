@@ -67,8 +67,7 @@ shipit config path
 
 1. looks at your staged git changes
 2. sends them to openai's api to generate a commit message
-3. shows you the suggestion
-4. commits with that message if you approve
+3. pushes that commit with the generated messages automatically
 
 ## requirements
 
