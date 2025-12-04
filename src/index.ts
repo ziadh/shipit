@@ -17,10 +17,12 @@ program
 program
   .command("config <action>")
   .description("Manage shipit configuration")
-  .action(async (action: string) => {
+  .option("--apiKey <key>", "Set API key")
+  .option("--model <model>", "Set model")
+  .action(async (action: string, options: { apiKey?: string; model?: string }) => {
     switch (action) {
       case "set":
-        await setupConfig();
+        await setupConfig(options);
         break;
       case "get":
         displayConfig();
@@ -81,9 +83,12 @@ async function ship() {
       process.exit(1);
     }
 
-    const model = getConfig("model") || "x-ai/grok-4.1-fast:free";
+    const model = getConfig("model") || "openai/gpt-oss-20b:free";
 
-    spinner = ora({ text: "generating commit message...", color: "blue" }).start();
+    spinner = ora({
+      text: "generating commit message...",
+      color: "blue",
+    }).start();
 
     const client = new OpenAI({
       baseURL: "https://openrouter.ai/api/v1",
@@ -102,7 +107,8 @@ async function ship() {
       });
 
       let commitMessage =
-        response.choices[0]?.message?.content?.trim() || "Auto-generated commit";
+        response.choices[0]?.message?.content?.trim() ||
+        "Auto-generated commit";
 
       // remove markdown code blocks if present
       commitMessage = commitMessage

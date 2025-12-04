@@ -46,9 +46,23 @@ export function setConfig(key: keyof ShipitConfig, value: string) {
   saveConfig(config);
 }
 
-export async function setupConfig() {
+export async function setupConfig(options?: { apiKey?: string; model?: string }) {
   const config = loadConfig();
 
+  // If options provided, use them directly
+  if (options?.apiKey || options?.model) {
+    if (options.apiKey) {
+      config.apiKey = options.apiKey;
+    }
+    if (options.model) {
+      config.model = options.model;
+    }
+    saveConfig(config);
+    console.log("✓ configuration saved!");
+    return;
+  }
+
+  // Otherwise, prompt interactively
   const answers = await inquirer.prompt([
     {
       type: "password",
