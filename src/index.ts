@@ -52,16 +52,19 @@ program.parse(process.argv);
 
 async function ship() {
   let spinner;
+  const startTime = Date.now();
 
   try {
     // check if we're in git repo
     execSync("git rev-parse --git-dir", { stdio: "ignore" });
 
     // stage changes
+    const stageStart = Date.now();
     spinner = ora({ text: "staging changes...", color: "blue" }).start();
     try {
       execSync("git add .");
-      spinner.succeed("changes staged");
+      const stageTime = Date.now() - stageStart;
+      spinner.succeed(`changes staged (${stageTime}ms)`);
     } catch (error: any) {
       spinner.fail("failed to stage changes");
       throw error;
@@ -85,6 +88,7 @@ async function ship() {
 
     const model = getConfig("model") || "openai/gpt-oss-20b:free";
 
+    const generateStart = Date.now();
     spinner = ora({
       text: "generating commit message...",
       color: "blue",
@@ -116,20 +120,26 @@ async function ship() {
         .replace(/\n```$/, "") // remove closing code block
         .trim();
 
-      spinner.succeed(`commit message: ${commitMessage}`);
+      const generateTime = Date.now() - generateStart;
+      spinner.succeed(`commit message: ${commitMessage} (${generateTime}ms)`);
 
+      const commitStart = Date.now();
       spinner = ora({ text: "committing changes...", color: "blue" }).start();
       execSync(`git commit -m "${commitMessage.replace(/"/g, '\\"')}"`);
-      spinner.succeed("changes committed");
+      const commitTime = Date.now() - commitStart;
+      spinner.succeed(`changes committed (${commitTime}ms)`);
     } catch (error: any) {
       spinner.fail("failed to generate or commit");
       throw error;
     }
 
+    const pushStart = Date.now();
     spinner = ora({ text: "pushing changes...", color: "blue" }).start();
     try {
       execSync("git push");
-      spinner.succeed("all shipped!");
+      const pushTime = Date.now() - pushStart;
+      const totalTime = Date.now() - startTime;
+      spinner.succeed(`all shipped! (push: ${pushTime}ms, total: ${totalTime}ms)`);
     } catch (error: any) {
       spinner.fail("failed to push changes");
       throw error;
