@@ -63,8 +63,8 @@ async function ship() {
     spinner = ora({ text: "staging changes...", color: "blue" }).start();
     try {
       execSync("git add .");
-      const stageTime = Date.now() - stageStart;
-      spinner.succeed(`changes staged (${stageTime}ms)`);
+      const stageTime = ((Date.now() - stageStart) / 1000).toFixed(2);
+      spinner.succeed(`changes staged (${stageTime}s)`);
     } catch (error: any) {
       spinner.fail("failed to stage changes");
       throw error;
@@ -120,14 +120,14 @@ async function ship() {
         .replace(/\n```$/, "") // remove closing code block
         .trim();
 
-      const generateTime = Date.now() - generateStart;
-      spinner.succeed(`commit message: ${commitMessage} (${generateTime}ms)`);
+      const generateTime = ((Date.now() - generateStart) / 1000).toFixed(2);
+      spinner.succeed(`commit message: ${commitMessage} (${generateTime}s)`);
 
       const commitStart = Date.now();
       spinner = ora({ text: "committing changes...", color: "blue" }).start();
       execSync(`git commit -m "${commitMessage.replace(/"/g, '\\"')}"`);
-      const commitTime = Date.now() - commitStart;
-      spinner.succeed(`changes committed (${commitTime}ms)`);
+      const commitTime = ((Date.now() - commitStart) / 1000).toFixed(2);
+      spinner.succeed(`changes committed (${commitTime}s)`);
     } catch (error: any) {
       spinner.fail("failed to generate or commit");
       throw error;
@@ -137,9 +137,9 @@ async function ship() {
     spinner = ora({ text: "pushing changes...", color: "blue" }).start();
     try {
       execSync("git push");
-      const pushTime = Date.now() - pushStart;
-      const totalTime = Date.now() - startTime;
-      spinner.succeed(`all shipped! (push: ${pushTime}ms, total: ${totalTime}ms)`);
+      const pushTime = ((Date.now() - pushStart) / 1000).toFixed(2);
+      const totalTime = ((Date.now() - startTime) / 1000).toFixed(2);
+      spinner.succeed(`all shipped! (push: ${pushTime}s, total: ${totalTime}s)`);
     } catch (error: any) {
       spinner.fail("failed to push changes");
       throw error;

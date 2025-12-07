@@ -1,6 +1,6 @@
 {
   "name": "shipitai",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "cli tool that helps you ship code faster",
   "license": "ISC",
   "author": "ziadh",

@@ -5,7 +5,7 @@ auto-generate and ship git commits with ai. never write a commit message again.
 ## install
 
 ```bash
-npm install -g shipitai
+npm i -g shipitai
 ```
 
 ## setup
@@ -25,7 +25,7 @@ alternatively, set individual config values directly:
 shipit config set --apiKey your-key-here
 
 # set just the model
-shipit config set --model x-ai/grok-4.1-fast:free
+shipit config set --model tngtech/deepseek-r1t2-chimera:free
 
 # set both at once
 shipit config set --apiKey your-key --model your-model
